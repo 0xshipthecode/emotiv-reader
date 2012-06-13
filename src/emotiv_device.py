@@ -197,3 +197,17 @@ class EmotivDevice:
         Unsubscribe from the received packets.
         """
         self.subscribers.remove(tgt)
+
+
+    def contact_resistance(self, contact):
+        """
+        Compute the contact resistance from the CQ value using an empirical
+        4th order poly relationship.
+        """
+        cq = self.cq[contact]
+        # return a very high value for CQ under 200 to indicate a BAD connection
+        if cq < 200:
+            return 1e6
+
+        cq = (cq - 673.5) / 315.6328        
+        return -12.7629 * cq**4 - 31.3003 * cq**3 + 12.1686 * cq**2 - 0.4063 * cq + 51.5679

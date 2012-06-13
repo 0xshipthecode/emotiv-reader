@@ -116,6 +116,7 @@ class SignalRendererWidget(Widget):
 
 	    # draw a bar indicating contact quality
 	    cq = self.dev.cq[chan_name]
+            cr = self.dev.contact_resistance(chan_name)
             
 #	    line_len = int(min(cq, 1.0) * 40.0)
 #	    pygame.draw.line(surf, (0, 255, 0), (frame.left + 10, zero_ax_y + 12), (frame.left + 10 + line_len, zero_ax_y + 12), 4)
@@ -130,7 +131,7 @@ class SignalRendererWidget(Widget):
 #	    elif cq < 0.9:
 #                quality_color = (255, 255, 0)
 #	    else:
-            quality_color = (20, 160, 20)
+            quality_color = (20, 100, 20)
 
 	    surf.blit(self.font.render(self.sig_list[s], 1, (0,0,0)), (frame.left + 10, zero_ax_y - 10))
-            surf.blit(self.cq_font.render('%d' % cq, 1, quality_color), (frame.left + 10, zero_ax_y  + 10))
+            surf.blit(self.cq_font.render('%d (%g kOhm)' % (cq, cr), 1, quality_color), (frame.left + 10, zero_ax_y  + 10))
