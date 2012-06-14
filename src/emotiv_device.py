@@ -202,12 +202,22 @@ class EmotivDevice:
     def contact_resistance(self, contact):
         """
         Compute the contact resistance from the CQ value using an empirical
-        4th order poly relationship.
+        4th order poly relationship.  Returns a number and a string indicating
+        the contact resistance.  The resistance unit is kOhm.
         """
         cq = self.cq[contact]
         # return a very high value for CQ under 200 to indicate a BAD connection
         if cq < 200:
-            return 1e6
+            return None, "No contact"
+
+        # if the value if very high, indicate excellent quality
+        if cq > 1000:
+            return 5, "Excellent"
 
         cq = (cq - 673.5) / 315.6328        
-        return -12.7629 * cq**4 - 31.3003 * cq**3 + 12.1686 * cq**2 - 0.4063 * cq + 51.5679
+        cr = -12.7629 * cq**4 - 31.3003 * cq**3 + 12.1686 * cq**2 - 0.4063 * cq + 51.5679
+
+        if cr > 100:
+            return cr, "%.0f MOhm" % (cr / 1000)
+        else:
+            return cr, "%.0f kOhm" % cr
