@@ -206,18 +206,16 @@ class EmotivDevice:
         the contact resistance.  The resistance unit is kOhm.
         """
         cq = self.cq[contact]
+
         # return a very high value for CQ under 200 to indicate a BAD connection
-        if cq < 200:
+        if cq < 260:
             return None, "No contact"
 
         # if the value if very high, indicate excellent quality
-        if cq > 1000:
-            return 5, "Excellent"
+        if cq > 1026:
+            return 4, "Excellent"
 
         cq = (cq - 673.5) / 315.6328        
         cr = -12.7629 * cq**4 - 31.3003 * cq**3 + 12.1686 * cq**2 - 0.4063 * cq + 51.5679
 
-        if cr > 100:
-            return cr, "%.0f MOhm" % (cr / 1000)
-        else:
-            return cr, "%.0f kOhm" % cr
+        return cr, "%.0f kOhm" % cr
