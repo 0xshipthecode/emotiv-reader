@@ -216,15 +216,16 @@ class WaveRiderGUI(RootWidget):
         RootWidget.begin_frame(self)
 
 
-    def draw(self, surf):
+    def draw_all(self, surf):
 
         # draw the root widgets
-        RootWidget.draw(self, surf)
+        Widget.draw_all(self, surf)
 
         # only render the cursor if required
         if self.render_cursor:
             pos = self.sq_pos
-            pygame.draw.rect(surf, (0, 0, 0), Rect(pos[0] - 10, pos[1] - 10, 20, 20))
+            pygame.draw.rect(display, (0, 0, 0), Rect(pos[0] - 10, pos[1] - 10, 20, 20))
+
 
 
     def start_recording(self):
