@@ -37,8 +37,10 @@ class WaveRiderGUI(RootWidget):
 
         self.recording_in_progress = False
 
+        # signal buffer stores 6 seconds of data
         self.sig_buf = SignalBuffer(768, 14)
 
+        # add status update callbacks to the device monitor
         mon.callbacks.append(self.update_device_status)
         mon.callbacks.append(self.start_device_reader)
 
