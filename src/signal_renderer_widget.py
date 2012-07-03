@@ -8,7 +8,6 @@ from albow.widget import Widget, overridable_property
 from albow.theme import ThemeProperty
 
 
-
 class SignalRendererWidget(Widget):
 	
 	
@@ -62,7 +61,9 @@ class SignalRendererWidget(Widget):
         # draw the zero level
         zero_ax_y = frame.top + frame.height // 2
 #        pygame.draw.line(surf, (70, 70, 70), (frame.left, zero_ax_y), (frame.right, zero_ax_y))
-        pygame.draw.line(surf, (20, 60, 20, 30), (frame.left, frame.bottom), (frame.right, frame.bottom))
+        pygame.draw.line(surf, (20, 60, 20, 30), 
+                         (frame.left, frame.bottom),
+                         (frame.right, frame.bottom))
 
         # draw the signal onto the screen (remove mean in buffer)
         zero_lev = np.mean(sig)
@@ -88,10 +89,35 @@ class SignalRendererWidget(Widget):
                          (frame.right - 10, zero_ax_y + uV100_len // 2), 2)
 
 
-    def render_spectrum(self, sig, frame, surf):
+    def render_spectrum(self, sig, color, frame, surf):
         """
         Render a spectral representation of the signal.
         """
+
+        # special check for all zeros (no data situation)
+        sig -= np.mean(sig)
+        if np.all(np.abs(sig) < 1.0):
+            sp = np.zeros(shape=(len(sig)/2,))
+        else:
+            sp = 20 * np.log(np.abs(np.fft.rfft(sig)))
+
+        # autoscale the FFT display
+        sp -= np.amin(sp)
+        sig_amp = np.amax(sp)
+        if sig_amp == 0:
+            sig_amp = 1.0
+        pixel_per_lsb = self.multiplier * frame.height / sig_amp / 2.0
+        draw_pts_y = frame.bottom - sp * pixel_per_lsb
+        draw_pts_x = np.linspace(0, frame.width, len(sp)) + frame.left
+
+        # draw line at bottom of frame
+        pygame.draw.line(surf, (20, 60, 20, 30), (frame.left, frame.bottom), 
+                         (frame.right, frame.bottom))
+
+        # draw the spectrum in dB
+        pygame.draw.lines(surf, color, False, zip(draw_pts_x, draw_pts_y))
+
+        # fixme: draw 20dB? yardstick
 
 
     def render_name_and_contact_quality(self, chan_name, frame, surf):
@@ -146,7 +172,8 @@ class SignalRendererWidget(Widget):
 
             # render a time series representation
             color = (255, 0, 0) if sndx % 2 == 0 else (0, 0, 255)
-            self.render_time_series(buf[:,s], color, rect, surf)
+#            self.render_time_series(buf[:,s], color, rect, surf)
+            self.render_spectrum(buf[:,s], color, rect, surf)
 
             # draw the signal name
             self.render_name_and_contact_quality(chan_name, rect, surf)
