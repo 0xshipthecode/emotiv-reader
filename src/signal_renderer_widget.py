@@ -71,6 +71,7 @@ class SignalRendererWidget(Widget):
         if sig_amp == 0:
             sig_amp = 1.0
         pixel_per_lsb = self.multiplier * frame.height / sig_amp / 2.0
+#        pixel_per_lsb = self.multiplier * frame.height / (50 / 0.51) / 2.0
         draw_pts_y = zero_ax_y - (sig - zero_lev) * pixel_per_lsb
         draw_pts_x = np.linspace(0, frame.width, len(sig)) + frame.left
 
@@ -109,6 +110,9 @@ class SignalRendererWidget(Widget):
         pixel_per_lsb = self.multiplier * frame.height / sig_amp / 2.0
         draw_pts_y = frame.bottom - sp * pixel_per_lsb
         draw_pts_x = np.linspace(0, frame.width, len(sp)) + frame.left
+
+        print draw_pts_y
+        print draw_pts_x
 
         # draw line at bottom of frame
         pygame.draw.line(surf, (20, 60, 20, 30), (frame.left, frame.bottom), 
@@ -173,7 +177,7 @@ class SignalRendererWidget(Widget):
             # render a time series representation
             color = (255, 0, 0) if sndx % 2 == 0 else (0, 0, 255)
 #            self.render_time_series(buf[:,s], color, rect, surf)
-            self.render_spectrum(buf[:,s], color, rect, surf)
+            self.render_time_series(buf[:,s], color, rect, surf)
 
             # draw the signal name
             self.render_name_and_contact_quality(chan_name, rect, surf)
