@@ -50,7 +50,10 @@ class SignalRendererWidget(Widget):
 
 
     def update_magnification(self, update):
-        self.multiplier = max(0.4, self.multiplier + update)
+        """
+        Set the magnification of the displayed signal.
+        """
+        self.multiplier = max(0.2, self.multiplier + update)
 
     
     def render_time_series(self, sig, color, frame, surf):
@@ -60,7 +63,9 @@ class SignalRendererWidget(Widget):
 
         # draw the zero level
         zero_ax_y = frame.top + frame.height // 2
-#        pygame.draw.line(surf, (70, 70, 70), (frame.left, zero_ax_y), (frame.right, zero_ax_y))
+        pygame.draw.line(surf, (70, 70, 70),
+                         (frame.left, zero_ax_y),
+                         (frame.right, zero_ax_y))
         pygame.draw.line(surf, (20, 60, 20, 30), 
                          (frame.left, frame.bottom),
                          (frame.right, frame.bottom))
@@ -78,16 +83,16 @@ class SignalRendererWidget(Widget):
         pygame.draw.lines(surf, color, False, zip(draw_pts_x, draw_pts_y))
 
         # draw a bar that corresponds to 10uV
-        uV100_len = 10.0 / 0.51 * pixel_per_lsb
-        if uV100_len > frame.height:
-            uV100_len = frame.height * 3 // 4
-            uV100_col = (255, 0, 0)
+        uV10_len = 10.0 / 0.51 * pixel_per_lsb
+        if uV10_len > frame.height:
+            uV10_len = frame.height * 3 // 4
+            uV10_col = (255, 0, 0)
         else:
-            uV100_col = (0, 0, 0)
+            uV10_col = (0, 0, 0)
                 
-        pygame.draw.line(surf, uV100_col, 
-                         (frame.right - 10, zero_ax_y - uV100_len // 2),
-                         (frame.right - 10, zero_ax_y + uV100_len // 2), 2)
+        pygame.draw.line(surf, uV10_col, 
+                         (frame.right - 10, zero_ax_y - uV10_len // 2),
+                         (frame.right - 10, zero_ax_y + uV10_len // 2), 2)
 
 
     def render_spectrum(self, sig, color, frame, surf):
@@ -110,9 +115,6 @@ class SignalRendererWidget(Widget):
         pixel_per_lsb = self.multiplier * frame.height / sig_amp / 2.0
         draw_pts_y = frame.bottom - sp * pixel_per_lsb
         draw_pts_x = np.linspace(0, frame.width, len(sp)) + frame.left
-
-        print draw_pts_y
-        print draw_pts_x
 
         # draw line at bottom of frame
         pygame.draw.line(surf, (20, 60, 20, 30), (frame.left, frame.bottom), 
@@ -176,8 +178,9 @@ class SignalRendererWidget(Widget):
 
             # render a time series representation
             color = (255, 0, 0) if sndx % 2 == 0 else (0, 0, 255)
-#            self.render_time_series(buf[:,s], color, rect, surf)
             self.render_time_series(buf[:,s], color, rect, surf)
+#            self.render_time_series(buf[:,s], color, rect, surf)
+#            self.render_spectrum(buf[:,s], color, rect, surf)
 
             # draw the signal name
             self.render_name_and_contact_quality(chan_name, rect, surf)

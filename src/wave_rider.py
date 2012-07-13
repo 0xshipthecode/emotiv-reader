@@ -307,7 +307,8 @@ if __name__ == '__main__':
 
     # init the device & monitor
     mon = EmotivDeviceMonitor()
-    dev = EmotivDevice('SN20120229000254')
+    dev = EmotivDevice('SN20120229000254') # moje
+#    dev = EmotivDevice('SN20120229000348') # jarovo
 
     # create the main GUI window
     rootwidget = WaveRiderGUI(display)
