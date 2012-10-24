@@ -43,10 +43,11 @@ class SignalRendererWidget(Widget):
         Toggle the display of channel with index ndx (0..13).
         """
         if ndx in self.selected:
-            if self.display_type[ndx] == 1:
-                self.selected.remove(ndx)
-            else:
-                self.display_type[ndx] = 1
+#            if self.display_type[ndx] == 1:
+#                self.selected.remove(ndx)
+#            else:
+#                self.display_type[ndx] = 1
+            self.selected.remove(ndx)
         else:
             # need to re-sort the list after the append
             bisect.insort(self.selected, ndx)
@@ -83,6 +84,7 @@ class SignalRendererWidget(Widget):
         pixel_per_lsb = self.multiplier * frame.height / (200.0 / 0.51)
         draw_pts_y = zero_ax_y - (sig - zero_lev) * pixel_per_lsb
         draw_pts_y[draw_pts_y < frame.top] = frame.top
+        draw_pts_y[draw_pts_y > frame.bottom] = frame.bottom
         draw_pts_x = np.linspace(0, frame.width, len(sig)) + frame.left
 
         pygame.draw.lines(surf, color, False, zip(draw_pts_x, draw_pts_y))
