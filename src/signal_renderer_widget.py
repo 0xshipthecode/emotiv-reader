@@ -21,10 +21,10 @@ class SignalRendererWidget(Widget):
         To select shown signals, use select_channels.
         """
         Widget.__init__(self, rect, **kwds)
-	self.sig_list = signal_list
-	self.dev = dev
-	self.buf = buf
-	self.font = pygame.font.SysFont("Ubuntu", 20, True)
+        self.sig_list = signal_list
+        self.dev = dev
+        self.buf = buf
+        self.font = pygame.font.SysFont("Ubuntu", 20, True)
         self.cq_font = pygame.font.SysFont("Ubuntu", 16, True)
         self.multiplier = 1.0
         self.selected = range(14)
